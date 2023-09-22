@@ -53,11 +53,19 @@
             <version>3.0.2</version>
         </dependency>
 
+        <!-- According to the teacher, Swagger and XML dependencies can cause
+             some interaction problems with other advance features, which
+             is why they are currently commented out.
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        -->
     </dependencies>
 
     <build>
