@@ -1,4 +1,4 @@
-package dev.kearls.restfulwebservices.user;
+package dev.kearls.restfulwebservices.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

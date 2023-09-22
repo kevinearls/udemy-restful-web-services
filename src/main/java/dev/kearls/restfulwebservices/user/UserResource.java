@@ -1,6 +1,6 @@
 package dev.kearls.restfulwebservices.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import dev.kearls.restfulwebservices.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
