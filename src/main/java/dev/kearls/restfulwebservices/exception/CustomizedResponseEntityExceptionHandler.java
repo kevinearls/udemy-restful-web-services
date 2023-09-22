@@ -2,14 +2,18 @@ package dev.kearls.restfulwebservices.exception;
 
 import dev.kearls.restfulwebservices.exception.ErrorDetails;
 import dev.kearls.restfulwebservices.exception.UserNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -31,4 +35,19 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
 
     }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        //ex.getFieldErrors().stream().
+        var allErrors = ex.getFieldErrors().stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
+        //System.out.println(">>>>>>>>>>a allErrors: " + allErrors);
+
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
+                allErrors, request.getDescription(false));
+
+        return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
 }
