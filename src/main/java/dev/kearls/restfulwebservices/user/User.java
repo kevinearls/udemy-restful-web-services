@@ -1,12 +1,15 @@
 package dev.kearls.restfulwebservices.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity(name = "user_details") // user is a reserved word in H2
@@ -20,6 +23,10 @@ public class User {
     private String name;
     @Past(message = "Birthdate must be in the past")
     private LocalDate birth;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Post> posts;
 
     public User(Integer id, String name, LocalDate birth) {
         this.id = id;
