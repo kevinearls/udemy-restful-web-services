@@ -20,11 +20,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class UserJpaResource {
 
-    @Autowired
+   // @Autowired
     private UserRepository repository;
 
-    public UserJpaResource(UserDaoService service, UserRepository repository) {
+    // @Autowired
+    private PostRepository postRepository;
+
+    public UserJpaResource(UserRepository repository, PostRepository postRepository) {
         this.repository = repository;
+        this.postRepository = postRepository;
     }
 
     @GetMapping("/jpa/users")
@@ -61,6 +65,16 @@ public class UserJpaResource {
         return user.get().getPosts();
     }
 
+    @GetMapping("jpa/posts/{id}")
+    public Post retrievePostById(@PathVariable int id) {
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isEmpty()) {
+            throw new UserNotFoundException("id: " + id);
+        }
+
+        return post.get();
+    }
+
 
     @PostMapping("/jpa/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
@@ -69,6 +83,25 @@ public class UserJpaResource {
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
+                .toUri();
+        return ResponseEntity.created(location)
+                .build();
+    }
+
+    @PostMapping("jpa/users/{id}/posts")
+    public ResponseEntity<Post> createPostForUser(@PathVariable int id, @Valid @RequestBody Post post) {
+        Optional<User> user = repository.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("id: " + id);
+        }
+
+        post.setUser(user.get());
+        var savedPost = postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedPost.getId())
                 .toUri();
         return ResponseEntity.created(location)
                 .build();
